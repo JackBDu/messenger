@@ -248,7 +248,7 @@
     }
 
     function joinChat(chat_id) {
-      sendToServer("join_chat", "?user_id="+user_id+"&chat_id="+invited.toString());
+      sendToServer("join_chat", "?user_id="+user_id+"&chat_id="+chat_id);
     }
 
     function updateActiveList(response) {
@@ -324,8 +324,6 @@
               displayError("Successfully signed out.");
           } else {
             var response = JSON.parse(responseText);
-            console.log("parsedResponse: ");
-            console.log(response);
             if (cmd == "active_list") {
               updateActiveList(response);
             } else if (cmd == "create_chat") {

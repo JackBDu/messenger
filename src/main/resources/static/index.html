@@ -22,7 +22,7 @@
     </header>
     <div id="content">
       <div id="chat_header">
-        <div id="new_chat" class="hide"><button>life</button><button id="start" onclick="create_chat();">Start</button></div>
+        <div id="new_chat" class="hide"></div><button id="start" onclick="createChat();">Start</button>
         <div id="current_chat"><button id="current_chat_id"></button><button id="leave" onclick="leaveChat();">Leave</button></div>
       </div>
       <div id="messages_wrapper"></div>
@@ -271,15 +271,16 @@
     }
 
     function displaySelection() {
-      var newChatElement = document.getElementById("new_chat").setAttribute("class", "");
+      var newChatElement = document.getElementById("new_chat");
+      newChatElement.setAttribute("class", "");
       document.getElementById("current_chat").setAttribute("class", "hide");
       while (newChatElement.firstChild) {
-            newChatElement.removeChild(newChatElement.firstChild);
+          newChatElement.removeChild(newChatElement.firstChild);
       }
       for (var i = 0; i < invited_users.length; i++) {
         var user = document.createElement("button");
         user.innerHTML = invited_users[i];
-        user.setAttribute("onclick", "removeFromSelection('"+invited_users[i]+"')");
+        user.setAttribute("onclick", "removeFromInvited('"+invited_users[i]+"')");
         newChatElement.appendChild(user);
       }
     }
@@ -363,6 +364,7 @@
     function createChat() {
       if (user_id && invited_users) {
         sendToServer("create_chat", "?user_id="+user_id+"&invited="+invited_users.toString());
+        invited_users = []
       }
     }
 

@@ -21,6 +21,7 @@
       <div id="messages_wrappers"></div>
       <div id="active_list_wrapper">
         <ul id="chat_list">
+          <button>test</button>
         </ul>
         <ul id="user_list">
         </ul>
@@ -43,6 +44,12 @@
     .hide {
       display: none;
     }
+    #active_list_wrapper {
+      width: 25%;
+      min-width: 200px;
+      height: 100%;
+      background-color: #fa0;
+    }
     #user_id, #user_id_display {
       font-size: 1em;
       width: 10em;
@@ -59,6 +66,9 @@
     }
     #update:hover, #signup:hover, #signin:hover, #signout:hover, #user_list button:hover, #chat_list button:hover {
       background: #aaf;
+    }
+    #active_list_wrapper button {
+      width: 100%;
     }
   </style>
   <script>
@@ -93,7 +103,7 @@
 
     function createChat(invited_user_id) {
       invited = []
-      invited.push[invited_user_id];
+      invited.push(invited_user_id);
       sendToServer("create_chat", "?user_id="+user_id+"&invited="+invited.toString());
     }
 
@@ -105,12 +115,12 @@
       if (cmd == "signin") {
         // replace signin_header with signout_header
         document.getElementById("signin_header").setAttribute("class", "hide");
-        document.getElementById("signout_header").innerHTML = user_id;
+        document.getElementById("user_id_display").innerHTML = user_id;
         document.getElementById("signout_header").setAttribute("class", "");
       } else {
         // replace signout_header with signin_header
         document.getElementById("signout_header").setAttribute("class", "hide");
-        document.getElementById("signout_header").innerHTML = "";
+        document.getElementById("user_id_display").innerHTML = "";
         document.getElementById("signin_header").setAttribute("class", "");
       }
     }

@@ -183,6 +183,14 @@
             console.log(response);
             if (cmd == "active_list") {
               updateActiveList(response);
+            } else if (cmd == "create_chat") {
+              if (response["status"]=="1") {
+                console.log("chat created: "+response["chat_id"]);
+              } else {
+                console.log("chat failed to create");
+              }
+            } else if (cmd == "join_chat") {
+              console.log("chat joined");
             }
           }
         } else if (this.readyState == 4 && this.status == 404) {

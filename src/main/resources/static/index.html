@@ -15,7 +15,7 @@
       <div id="signout_header" class="hide">
         <button id="user_id_display"></button>
         <br>
-        <button id="signout" onclick="signout();">Sign Out</button><button id="update" onclick="sendToServer('active_list')">Update</button>
+        <button id="signout" onclick="signout();">Sign Out</button><button id="update" onclick="sendToServer('active_list')">Refresh</button>
       </div>
     </header>
     <div id="content">
@@ -203,8 +203,10 @@
       if (user_id != "") {
         sendToServer("signup","?user_id="+user_id);
         console.log("signing up: "+user_id);
+      } else {
+        console.log("displaying username cannot be empty");
+        displayError("Username cannot be empty.");
       }
-      displayError("Username cannot be empty.");
 		}
 
 		function signin() {
@@ -323,11 +325,13 @@
               if (response["status"]=="1") {
                 console.log("chat created: "+response["chat_id"]);
                 chat_id = response["chat_id"];
+                sendToServer("active_list");
               } else {
                 console.log("chat failed to create");
               }
             } else if (cmd == "join_chat") {
               console.log("chat joined");
+              sendToServer("active_list");
             }
           }
         } else if (this.readyState == 4 && this.status == 404) {

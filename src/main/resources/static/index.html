@@ -1,11 +1,27 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <title>Messenger</title>
+    <meta charset="UTF-8">
   </head>
   <body>
-    <input id="user_id"></input>
-    <button id="login" onclick="login();">Login</button>
+    <header>
+      <div id="signin_header">
+        <input id="user_id" placeholder="username"></input>
+        <button id="signin" onclick="signin();">Sign In</button>
+        <button id="signup" onclick="signup();">Sign Up</button>
+        <span id="signin_error"></span>
+      </div>
+      <div id="hello_header" class="hide">
+        <span id="user_id_display"></span>
+        <button id="signout" onclick="signout();">Log Out</button>
+      </div>
+    </header>
+    <content>
+      <div id="messages_wrappers"></div>
+      <div id="active_list_wrapper"></div>
+    </content>
+    <footer></footer>
   </body>
   <style>
     * {
@@ -18,13 +34,18 @@
       width: 100%;
       height: 100%;
     }
-    input {
+    .hide {
+      display: none;
+    }
+    #user_id {
       font-size: 1em;
       width: 10em;
       height: 2em;
       background: #eef;
+      padding: 0 0.5em;
     }
-    button {
+    #signup, #signin {
+      margin: 0;
       font-size: 1em;
       background: #ddf;
       width: 5em;
@@ -33,27 +54,77 @@
   </style>
   <script>
 
+    var user_id = "";
+    var response = JSON.parse('{ "name":"John", "age":30, "city":"New York"}');
+    console.log(response["name"]);
+
 		document.getElementById("user_id")
 				.addEventListener("keyup", function(event) {
 				event.preventDefault();
 				if (event.keyCode == 13) {
-						document.getElementById("login").click();
+						document.getElementById("send").click();
 				}
 		});
 
-		function login() {
-			console.log("login: "+document.getElementById("user_id").value);
-			sendToServer("login?user_id"+"="+document.getElementById("user_id").value);
+		function signup() {
+      user_id = document.getElementById("user_id").value;
+			console.log("signup: "+user_id);
+			sendToServer("signup"+"?user_id"+"="+user_id);
 		}
 
-		function sendToServer(outToServer) {
+		function signin() {
+			console.log("signin: "+user_id);
+			sendToServer("signin","?user_id"+"="+user_id);
+		}
+
+    function displayHelloHeader() {
+      document.getElementById("signin_header").display = "none";
+      document.getElementById("hello_header").innerHTML = user_id;
+      document.getElementById("hello_header").display = "block";
+    }
+
+    function updateChatList() {
+      console.log("updating chat list");
+    }
+
+    function displayError(msg) {
+      document.getElementById("signin_error").innerHTML = msg;
+    }
+
+		function sendToServer(cmd, info="") {
 			var xhttp = new XMLHttpRequest();
 			xhttp.onreadystatechange = function() {
 				if (this.readyState == 4 && this.status == 200) {
-					console.log("inFromServer: "+this.responseText);
-				}
+          var responseText = this.responseText;
+          console.log(responseText);
+          if (cmd == "signin") {
+            if (responseText) {
+              displayHelloHeader();
+              sendToServer("active_list");
+            } else {
+              console.log("user not found");
+              displayError("Username not found.");
+            }
+          } else if (cmd == "signup") {
+            if (responseText) {
+              displayHelloHeader();
+              sendToServer("active_list");
+            } else {
+              console.log("already exists");
+              displayError("Username already exists.");
+            }
+          } else {
+            var response = JSON.parse(responseText);
+            console.log(response);
+            if (cmd == "get_list") {
+              updateChatList(response);
+            }
+          }
+        } else if (this.readyState == 4 && this.status == 404) {
+          displayError("File not found");
+        }
 			};
-			xhttp.open("GET", outToServer, true);
+			xhttp.open("GET", cmd+info, true);
 			xhttp.send();
 		}
 

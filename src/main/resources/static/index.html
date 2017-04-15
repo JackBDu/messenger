@@ -21,8 +21,6 @@
       <div id="messages_wrappers"></div>
       <div id="active_list_wrapper">
         <ul id="chat_list">
-          <li><button>test</button></li>
-          <li><button>test</button></li>
         </ul>
         <ul id="user_list">
         </ul>
@@ -77,7 +75,7 @@
 
 		function signup() {
       user_id = document.getElementById("user_id").value;
-			sendToServer("signup"+"?user_id="+user_id);
+			sendToServer("signup","?user_id="+user_id);
 			console.log("signing up: "+user_id);
 		}
 
@@ -104,13 +102,13 @@
     }
 
     function updateHeader(cmd) {
-      if (cmd == "signout") {
-        // replace signout_header with signin_header
+      if (cmd == "signin") {
+        // replace signin_header with signout_header
         document.getElementById("signin_header").setAttribute("class", "hide");
         document.getElementById("signout_header").innerHTML = user_id;
         document.getElementById("signout_header").setAttribute("class", "");
       } else {
-        // replace signin_header with signout_header
+        // replace signout_header with signin_header
         document.getElementById("signout_header").setAttribute("class", "hide");
         document.getElementById("signout_header").innerHTML = "";
         document.getElementById("signin_header").setAttribute("class", "");
@@ -129,7 +127,7 @@
       while (chatListElement.firstChild) {
             chatListElement.removeChild(chatListElement.firstChild);
       }
-      for (int i=0; i < user_list.length; i++) {
+      for (var i=0; i < user_list.length; i++) {
         var liElement = document.createElement("li");
         var buttonElement = document.createElement("button");
         buttonElement.innerHTML = user_list[i];
@@ -137,7 +135,7 @@
         liElement.appendChild(buttonElement);
         userListElement.appendChild(liElement);
       }
-      for (int i=0; i < chat_list.length; i++) {
+      for (var i=0; i < chat_list.length; i++) {
         var liElement = document.createElement("li");
         var buttonElement = document.createElement("button");
         buttonElement.setAttribute("onclick", "joinChat('chat_list[i]');");

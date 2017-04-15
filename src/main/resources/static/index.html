@@ -5,16 +5,16 @@
     <meta charset="UTF-8">
   </head>
   <body> <header>
-      <div id="signin_header" class="hide">
+      <div id="signin_header">
         <input id="user_id" placeholder="username"></input>
-        <button id="signin" onclick="signin();">Sign In</button>
-        <button id="signup" onclick="signup();">Sign Up</button>
+        <br>
+        <button id="signin" onclick="signin();">Sign In</button><button id="signup" onclick="signup();">Sign Up</button>
         <span id="signin_error"></span>
       </div>
-      <div id="signout_header">
-        <button id="user_id_display">Jack B. Du</button>
-        <button id="signout" onclick="signout();">Sign Out</button>
-        <button id="update" onclick="sendToServer('active_list')">Update</button>
+      <div id="signout_header" class="hide">
+        <button id="user_id_display"></button>
+        <br>
+        <button id="signout" onclick="signout();">Sign Out</button><button id="update" onclick="sendToServer('active_list')">Update</button>
       </div>
     </header>
     <div id="content">
@@ -59,21 +59,34 @@
       width: 100%;
     }
     #user_id, #user_id_display {
+      -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+         -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+              box-sizing: border-box;         /* Opera/IE 8+ */
       font-size: 1em;
       width: 25%;
       height: 3em;
-      background: #eef;
-      padding: 0 0.5em;
+      background: #eee;
+      padding: 0 1em;
     }
-    #update, #signup, #signin, #signout, #user_list button, #chat_list button {
-      margin: 0;
+    #update, #signup, #signin, #signout {
       font-size: 1em;
-      background: #ddf;
-      width: 5em;
-      height: 2em;
+      background: #ddd;
+      width: 12.5%;
+      height: 3em;
+    }
+    #user_list button, #chat_list button {
+      font-size: 1em;
+      width: 100%;
+      height: 3em;
+    }
+    #user_list button {
+      background: #eee;
+    }
+    #chat_list button {
+      background: #ddd;
     }
     #update:hover, #signup:hover, #signin:hover, #signout:hover, #user_list button:hover, #chat_list button:hover {
-      background: #aaf;
+      background: #ccc;
     }
     #active_list_wrapper button {
       width: 100%;
@@ -229,8 +242,10 @@
 
     function sendNewMessage() {
       var newMessage = document.getElementById("new_message").value;
-      document.getElementById("new_message").value = "";
-      sendToServer("new_msg", "?user_id="+user_id+"&chat_id="+chat_id+"&msg="+newMessage);
+      if (newMessage && user_id && chat_id) {
+        document.getElementById("new_message").value = "";
+        sendToServer("new_msg", "?user_id="+user_id+"&chat_id="+chat_id+"&msg="+newMessage);
+      }
     }
 
 		function sendToServer(cmd, info="") {

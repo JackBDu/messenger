@@ -22,8 +22,8 @@
     </header>
     <div id="content">
       <div id="chat_header">
-        <div id="new_chat" class="hide"><button></button></div>
-        <div id="current_chat"><button id="current_chat_id">1</button><button id="leave" onclick="leaveChat();">Leave</button></div>
+        <div id="new_chat" class="hide"><button>life</button><button id="start" onclick="create_chat();">Start</button></div>
+        <div id="current_chat"><button id="current_chat_id"></button><button id="leave" onclick="leaveChat();">Leave</button></div>
       </div>
       <div id="messages_wrapper"></div>
       <div id="active_list_wrapper">
@@ -66,6 +66,15 @@
       width: 100%;
       height: 3em;
     }
+    #new_chat button {
+      height: 100%;
+      background-color: #fcfcfc;
+      font-size: 1em;
+      padding: 0 0.5em;
+    }
+    #new_chat button:hover {
+      background-color: #f5f5f5;
+    }
     #chat_header {
       width: 75%;
       position: fixed;
@@ -82,15 +91,19 @@
       font-size: 1em;
       background-color: #fcfcfc;
     }
-    #leave {
+    #leave, button#start {
       -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
          -moz-box-sizing: border-box;    /* Firefox, other Gecko */
               box-sizing: border-box;         /* Opera/IE 8+ */
-      width: 20%;
-      height: 100%;
+      width: 15%;
+      height: 3em;
       font-size: 1em;
       background-color: #fcfcfc;
       border-left: solid 1px lightgray;
+      border-bottom: solid 1px lightgray;
+      position: fixed;
+      top: 0;
+      right: 0;
     }
     #leave:hover {
       background-color: #f5f5f5;
@@ -101,6 +114,7 @@
               box-sizing: border-box;         /* Opera/IE 8+ */
       height: 3em;
       border-bottom: solid 1px lightgray;
+      padding: 0 1em;
     }
     #user_id, #user_id_display {
       -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
@@ -233,6 +247,7 @@
 
     var user_id = "";
     var chat_id = "";
+    var invited_users = [];
 
 		document.getElementById("user_id")
 				.addEventListener("keyup", function(event) {
@@ -250,8 +265,44 @@
 				}
 		});
 
-    function leaveChat() [
-      sendToServer("leave_chat", "?user_id="+user_id+"&chat_id="+chat_id);
+    function addUser(selected_user_id) {
+      invited_users.push(selected_user_id);
+      displaySelection();
+    }
+
+    function displaySelection() {
+      var newChatElement = document.getElementById("new_chat").setAttribute("class", "");
+      document.getElementById("current_chat").setAttribute("class", "hide");
+      while (newChatElement.firstChild) {
+            newChatElement.removeChild(newChatElement.firstChild);
+      }
+      for (var i = 0; i < invited_users.length; i++) {
+        var user = document.createElement("button");
+        user.innerHTML = invited_users[i];
+        user.setAttribute("onclick", "removeFromSelection('"+invited_users[i]+"')");
+        newChatElement.appendChild(user);
+      }
+    }
+
+    function removeFromInvited(user_to_remove) {
+      var i = invited_users.indexOf(user_to_remove);
+      if (i != -1) {
+        invited_users.splice(i, 1);
+      }
+      displaySelection();
+    }
+
+    function leaveChat() {
+      if (user_id && chat_id) {
+        sendToServer("leave_chat", "?user_id="+user_id+"&chat_id="+chat_id);
+      }
+    }
+
+    function switchChat(new_chat_id) {
+      document.getElementById("new_chat").setAttribute("class", "hide");
+      document.getElementById("current_chat").setAttribute("class", "");
+      chat_id = new_chat_id;
+      document.getElementById("current_chat_id").innerHTML = chat_id;
     }
 
     function switchToChats() {
@@ -309,15 +360,17 @@
       }
     }
 
-    function createChat(invited_user_id) {
-      invited = []
-      invited.push(invited_user_id);
-      sendToServer("create_chat", "?user_id="+user_id+"&invited="+invited.toString());
+    function createChat() {
+      if (user_id && invited_users) {
+        sendToServer("create_chat", "?user_id="+user_id+"&invited="+invited_users.toString());
+      }
     }
 
     function joinChat(joining_chat_id) {
-      chat_id = joining_chat_id;
-      sendToServer("join_chat", "?user_id="+user_id+"&chat_id="+joining_chat_id);
+      if (user_id) {
+        chat_id = joining_chat_id;
+        sendToServer("join_chat", "?user_id="+user_id+"&chat_id="+joining_chat_id);
+      }
     }
 
     function updateActiveList(response) {
@@ -337,7 +390,7 @@
           var liElement = document.createElement("li");
           var buttonElement = document.createElement("button");
           buttonElement.innerHTML = user_list[i];
-          buttonElement.setAttribute("onclick", "createChat('"+user_list[i]+"');");
+          buttonElement.setAttribute("onclick", "addUser('"+user_list[i]+"');");
           liElement.appendChild(buttonElement);
           userListElement.appendChild(liElement);
         }
@@ -351,9 +404,9 @@
         chatListElement.appendChild(liElement);
       }
       if (user_list.length < 1) {
-        document.getElementById("signout_msg").setAttributes("class", "");
+        document.getElementById("signout_msg").setAttribute("class", "");
       } else {
-        document.getElementById("signout_msg").setAttributes("class", "hide");
+        document.getElementById("signout_msg").setAttribute("class", "hide");
       }
     }
 
@@ -402,7 +455,7 @@
             } else if (cmd == "create_chat") {
               if (response["status"]=="1") {
                 console.log("chat created: "+response["chat_id"]);
-                chat_id = response["chat_id"];
+                switchChat(response["chat_id"]);
                 sendToServer("active_list");
               } else {
                 console.log("chat failed to create");
@@ -410,6 +463,7 @@
             } else if (cmd == "join_chat") {
               if (response["status"]=="1") {
                 console.log("chat joined");
+                switchChat(chat_id);
               } else {
                 console.log("chat failed");
                 chat_id = ""

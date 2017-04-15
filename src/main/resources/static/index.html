@@ -5,15 +5,15 @@
     <meta charset="UTF-8">
   </head>
   <body> <header>
-      <div id="signin_header">
+      <div id="signin_header" class="hide">
         <input id="user_id" placeholder="type your username..."></input>
         <br>
         <button id="signin" onclick="signin();">Sign In</button><button id="signup" onclick="signup();">Sign Up</button>
         <br>
         <div id="signin_msg"></div>
       </div>
-      <div id="signout_header" class="hide">
-        <button id="user_id_display"></button>
+      <div id="signout_header" class="ide">
+        <button id="user_id_display">Test</button>
         <br>
         <button id="signout" onclick="signout();">Sign Out</button><button id="update" onclick="sendToServer('active_list')">Refresh</button>
         <br>
@@ -21,12 +21,23 @@
       </div>
     </header>
     <div id="content">
+      <div id="chat_header">
+        <div id="new_chat" class="hide"><button></button></div>
+        <div id="current_chat"><button></button></div>
+      </div>
       <div id="messages_wrapper">
       </div>
       <div id="active_list_wrapper">
+        <button id="active_chats" class="selected" onclick="switchToChats();">Chats</button><button id="active_users" onclick="switchToUsers()">Users</button>
         <ul id="chat_list">
+          <li><button>testChat</button></li>
+          <li><button>testChat</button></li>
+          <li><button>testChat</button></li>
         </ul>
-        <ul id="user_list">
+        <ul class="hide" id="user_list">
+          <li><button>testUser</button></li>
+          <li><button>testUser</button></li>
+          <li><button>testUser</button></li>
         </ul>
       </div>
       <div id="new_message_wrapper">
@@ -62,9 +73,22 @@
       width: 100%;
       height: 3em;
     }
+    #chat_header {
+      width: 75%;
+      position: fixed;
+      top: 0;
+      right: 0;
+    }
     #content {
       height: 100%;
       width: 100%;
+    }
+    #current_chat, #new_chat {
+      -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+         -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+              box-sizing: border-box;         /* Opera/IE 8+ */
+      height: 3em;
+      border-bottom: solid 1px lightgray;
     }
     #user_id, #user_id_display {
       -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
@@ -73,7 +97,7 @@
       font-size: 1em;
       width: 25%;
       height: 3em;
-      background: #eee;
+      background: #fdfdfd;
       padding: 0 1em;
       border: solid 1px lightgray;
       border-left: 0px;
@@ -83,7 +107,7 @@
          -moz-box-sizing: border-box;    /* Firefox, other Gecko */
               box-sizing: border-box;         /* Opera/IE 8+ */
       font-size: 1em;
-      background: #ddd;
+      background: #fdfdfd;
       width: 12.5%;
       height: 3em;
       border: solid 1px lightgray;
@@ -98,20 +122,34 @@
       width: 25%;
       color: red;
     }
+    #active_chats, #active_users {
+      color: gray;
+      background-color: #f5f5f5;
+      font-size: 1em;
+      width: 50%;
+      height: 3em;
+      padding: 0 1em;
+    }
+    #active_chats:hover, #active_users:hover {
+      color: black;
+    }
+    .selected#active_users, .selected#active_chats {
+      background-color: #fcfcfc;
+    }
     #user_list button, #chat_list button {
       font-size: 1em;
       width: 100%;
       height: 3em;
       padding: 0 1em;
     }
-    #user_list button {
-      background: #eee;
+    #user_list button, #chat_list button {
+      background-color: #fcfcfc;
     }
-    #chat_list button {
-      background: #ddd;
+    #update:hover, #signup:hover, #signin:hover, #signout:hover {
+      background-color: #f5f5f5;
     }
-    #update:hover, #signup:hover, #signin:hover, #signout:hover, #user_list button:hover, #chat_list button:hover {
-      background: #ccc;
+    #user_list button:hover, #chat_list button:hover {
+      background-color: #f0f0f0;
     }
     #messages_wrapper {
       width: 75%;
@@ -199,6 +237,19 @@
           document.getElementById("send").click();
 				}
 		});
+    function switchToChats() {
+      document.getElementById("user_list").setAttribute("class", "hide");
+      document.getElementById("chat_list").setAttribute("class", "");
+      document.getElementById("active_chats").setAttribute("class", "selected");
+      document.getElementById("active_users").setAttribute("class", "");
+    }
+
+    function switchToUsers() {
+      document.getElementById("chat_list").setAttribute("class", "hide");
+      document.getElementById("user_list").setAttribute("class", "");
+      document.getElementById("active_chats").setAttribute("class", "");
+      document.getElementById("active_users").setAttribute("class", "selected");
+    }
 
 		function signup() {
       user_id = document.getElementById("user_id").value;

@@ -55,8 +55,6 @@
   <script>
 
     var user_id = "";
-    var response = JSON.parse('{ "name":"John", "age":30, "city":"New York"}');
-    console.log(response["name"]);
 
 		document.getElementById("user_id")
 				.addEventListener("keyup", function(event) {
@@ -73,6 +71,7 @@
 		}
 
 		function signin() {
+      user_id = document.getElementById("user_id").value;
 			console.log("signin: "+user_id);
 			sendToServer("signin","?user_id"+"="+user_id);
 		}
@@ -98,7 +97,7 @@
           var responseText = this.responseText;
           console.log(responseText);
           if (cmd == "signin") {
-            if (responseText) {
+            if (responseText == "true") {
               displayHelloHeader();
               sendToServer("active_list");
             } else {
@@ -106,7 +105,7 @@
               displayError("Username not found.");
             }
           } else if (cmd == "signup") {
-            if (responseText) {
+            if (responseText == "true") {
               displayHelloHeader();
               sendToServer("active_list");
             } else {

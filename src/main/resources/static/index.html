@@ -141,7 +141,7 @@
         var liElement = document.createElement("li");
         var buttonElement = document.createElement("button");
         buttonElement.innerHTML = user_list[i];
-        buttonElement.setAttribute("onclick", "createChat("+user_list[i]+");");
+        buttonElement.setAttribute("onclick", "createChat('"+user_list[i]+"');");
         liElement.appendChild(buttonElement);
         userListElement.appendChild(liElement);
       }

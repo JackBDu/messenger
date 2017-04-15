@@ -10,12 +10,14 @@
         <br>
         <button id="signin" onclick="signin();">Sign In</button><button id="signup" onclick="signup();">Sign Up</button>
         <br>
-        <div id="signin_error"></div>
+        <div id="signin_msg"></div>
       </div>
       <div id="signout_header" class="hide">
         <button id="user_id_display"></button>
         <br>
         <button id="signout" onclick="signout();">Sign Out</button><button id="update" onclick="sendToServer('active_list')">Refresh</button>
+        <br>
+        <div id="signout_msg" class="hide">Nobody's online :(</div>
       </div>
     </header>
     <div id="content">
@@ -88,7 +90,7 @@
       border-left: 0px;
       border-top: 0px;
     }
-    #signin_error {
+    #signin_msg {
       -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
          -moz-box-sizing: border-box;    /* Firefox, other Gecko */
               box-sizing: border-box;         /* Opera/IE 8+ */
@@ -222,7 +224,7 @@
     }
 
     function displayError(msg) {
-      document.getElementById("signin_error").innerHTML = msg;
+      document.getElementById("signin_msg").innerHTML = msg;
     }
 
     function updateHeader(cmd) {
@@ -274,10 +276,15 @@
       for (var i=0; i < chat_list.length; i++) {
         var liElement = document.createElement("li");
         var buttonElement = document.createElement("button");
-        buttonElement.setAttribute("onclick", "joinChat('chat_list[i]');");
+        buttonElement.setAttribute("onclick", "joinChat('"+chat_list[i]+"');");
         buttonElement.innerHTML = chat_list[i];
         liElement.appendChild(buttonElement);
         chatListElement.appendChild(liElement);
+      }
+      if (user_list.length < 1) {
+        document.getElementById("signout_msg").setAttributes("class", "");
+      } else {
+        document.getElementById("signout_msg").setAttributes("class", "hide");
       }
     }
 

@@ -15,7 +15,7 @@
       <div id="signout_header" class="hide">
         <button id="user_id_display"></button>
         <br>
-        <button id="signout" onclick="signout();">Sign Out</button><button id="update" onclick="sendToServer('active_list')">Refresh</button>
+        <button id="signout" onclick="signout();">Sign Out</button><button id="update" onclick="refresh();">Refresh</button>
         <br>
         <div id="signout_msg" class="hide">Nobody's online :(</div>
       </div>
@@ -25,7 +25,7 @@
         <div id="new_chat" class="hide"></div><button id="start" onclick="createChat();">Start</button>
         <div id="current_chat"><button id="current_chat_id"></button><button id="leave" onclick="leaveChat();">Leave</button></div>
       </div>
-      <div id="messages_wrapper"></div>
+      <div id="messages_wrapper"><ul id="messages"></ul></div>
       <div id="active_list_wrapper">
         <button id="active_chats" class="selected" onclick="switchToChats();">Chats</button><button id="active_users" onclick="switchToUsers()">Users</button>
         <ul id="chat_list">
@@ -265,6 +265,22 @@
 				}
 		});
 
+    function updateMessage(messages) {
+      var ulElement = document.getElementById("messages");
+      for (var i = 0; i < messages.length; i++) {
+        var liElement = document.createElement("li");
+        liElement.innerHTML = messages[i].user_id+": "+messages[i].content;
+        ulElement.appendChild(liElement);
+      }
+    }
+
+    function refresh() {
+      sendToServer('active_list');
+      if (chat_id) {
+        sendToServer('check_message', "?chat_id="+chat_id);
+      }
+    }
+
     function addUser(selected_user_id) {
       invited_users.push(selected_user_id);
       displaySelection();
@@ -300,6 +316,10 @@
     }
 
     function switchChat(new_chat_id) {
+      var messagesElement = document.getElementById("messages");
+      while (messagesElement.firstChild) {
+            messagesElement.removeChild(messagesElement.firstChild);
+      }
       document.getElementById("new_chat").setAttribute("class", "hide");
       document.getElementById("current_chat").setAttribute("class", "");
       chat_id = new_chat_id;
@@ -473,6 +493,10 @@
                 chat_id = ""
               }
               sendToServer("active_list");
+            } else if (cmd == "check_message") {
+              if (response[0] != "0") {
+                updateMessage(response[1]);
+              }
             }
           }
         } else if (this.readyState == 4 && this.status == 404) {

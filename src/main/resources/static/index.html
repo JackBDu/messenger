@@ -5,15 +5,15 @@
     <meta charset="UTF-8">
   </head>
   <body> <header>
-      <div id="signin_header" class="hide">
+      <div id="signin_header">
         <input id="user_id" placeholder="type your username..."></input>
         <br>
         <button id="signin" onclick="signin();">Sign In</button><button id="signup" onclick="signup();">Sign Up</button>
         <br>
         <div id="signin_msg"></div>
       </div>
-      <div id="signout_header" class="ide">
-        <button id="user_id_display">Test</button>
+      <div id="signout_header" class="hide">
+        <button id="user_id_display"></button>
         <br>
         <button id="signout" onclick="signout();">Sign Out</button><button id="update" onclick="sendToServer('active_list')">Refresh</button>
         <br>
@@ -23,21 +23,14 @@
     <div id="content">
       <div id="chat_header">
         <div id="new_chat" class="hide"><button></button></div>
-        <div id="current_chat"><button></button></div>
+        <div id="current_chat"><button id="current_chat_id">1</button><button id="leave" onclick="leaveChat();">Leave</button></div>
       </div>
-      <div id="messages_wrapper">
-      </div>
+      <div id="messages_wrapper"></div>
       <div id="active_list_wrapper">
         <button id="active_chats" class="selected" onclick="switchToChats();">Chats</button><button id="active_users" onclick="switchToUsers()">Users</button>
         <ul id="chat_list">
-          <li><button>testChat</button></li>
-          <li><button>testChat</button></li>
-          <li><button>testChat</button></li>
         </ul>
         <ul class="hide" id="user_list">
-          <li><button>testUser</button></li>
-          <li><button>testUser</button></li>
-          <li><button>testUser</button></li>
         </ul>
       </div>
       <div id="new_message_wrapper">
@@ -83,6 +76,25 @@
       height: 100%;
       width: 100%;
     }
+    #current_chat_id {
+      width: 80%;
+      height: 100%;
+      font-size: 1em;
+      background-color: #fcfcfc;
+    }
+    #leave {
+      -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+         -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+              box-sizing: border-box;         /* Opera/IE 8+ */
+      width: 20%;
+      height: 100%;
+      font-size: 1em;
+      background-color: #fcfcfc;
+      border-left: solid 1px lightgray;
+    }
+    #leave:hover {
+      background-color: #f5f5f5;
+    }
     #current_chat, #new_chat {
       -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
          -moz-box-sizing: border-box;    /* Firefox, other Gecko */
@@ -97,7 +109,7 @@
       font-size: 1em;
       width: 25%;
       height: 3em;
-      background: #fdfdfd;
+      background: #fcfcfc;
       padding: 0 1em;
       border: solid 1px lightgray;
       border-left: 0px;
@@ -107,7 +119,7 @@
          -moz-box-sizing: border-box;    /* Firefox, other Gecko */
               box-sizing: border-box;         /* Opera/IE 8+ */
       font-size: 1em;
-      background: #fdfdfd;
+      background: #fcfcfc;
       width: 12.5%;
       height: 3em;
       border: solid 1px lightgray;
@@ -237,6 +249,11 @@
           document.getElementById("send").click();
 				}
 		});
+
+    function leaveChat() [
+      sendToServer("leave_chat", "?user_id="+user_id+"&chat_id="+chat_id);
+    }
+
     function switchToChats() {
       document.getElementById("user_list").setAttribute("class", "hide");
       document.getElementById("chat_list").setAttribute("class", "");
@@ -298,8 +315,9 @@
       sendToServer("create_chat", "?user_id="+user_id+"&invited="+invited.toString());
     }
 
-    function joinChat(chat_id) {
-      sendToServer("join_chat", "?user_id="+user_id+"&chat_id="+chat_id);
+    function joinChat(joining_chat_id) {
+      chat_id = joining_chat_id;
+      sendToServer("join_chat", "?user_id="+user_id+"&chat_id="+joining_chat_id);
     }
 
     function updateActiveList(response) {
@@ -373,6 +391,10 @@
           } else if (cmd == "signout") {
               updateHeader("signout");
               displayError("Successfully signed out.");
+          } else if (cmd == "leave_chat") {
+              if (responseText == "1") {
+                chat_id = "";
+              }
           } else {
             var response = JSON.parse(responseText);
             if (cmd == "active_list") {
@@ -386,7 +408,12 @@
                 console.log("chat failed to create");
               }
             } else if (cmd == "join_chat") {
-              console.log("chat joined");
+              if (response["status"]=="1") {
+                console.log("chat joined");
+              } else {
+                console.log("chat failed");
+                chat_id = ""
+              }
               sendToServer("active_list");
             }
           }

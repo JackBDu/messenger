@@ -4,8 +4,7 @@
     <title>Messenger</title>
     <meta charset="UTF-8">
   </head>
-  <body>
-    <header>
+  <body> <header>
       <div id="signin_header">
         <input id="user_id" placeholder="username"></input>
         <button id="signin" onclick="signin();">Sign In</button>
@@ -15,13 +14,18 @@
       <div id="signout_header" class="hide">
         <button id="user_id_display"></button>
         <button id="signout" onclick="signout();">Sign Out</button>
+        <button id="update" onclick="updateActiveList();">Update</button>
       </div>
     </header>
     <content>
       <div id="messages_wrappers"></div>
       <div id="active_list_wrapper">
-        <ul id="chat_list"></ul>
-        <ul id="user_list"></ul>
+        <ul id="chat_list">
+          <li><button>test</button></li>
+          <li><button>test</button></li>
+        </ul>
+        <ul id="user_list">
+        </ul>
       </div>
     </content>
     <footer></footer>
@@ -48,14 +52,14 @@
       background: #eef;
       padding: 0 0.5em;
     }
-    #signup, #signin, #signout {
+    #update, #signup, #signin, #signout, #user_list button, #chat_list button {
       margin: 0;
       font-size: 1em;
       background: #ddf;
       width: 5em;
       height: 2em;
     }
-    #signup:hover, #signin:hover, #signout:hover {
+    #update:hover, #signup:hover, #signin:hover, #signout:hover, #user_list button:hover, #chat_list button:hover {
       background: #aaf;
     }
   </style>
@@ -89,6 +93,16 @@
       user_id = "";
     }
 
+    function createChat(invited_user_id) {
+      invited = []
+      invited.push[invited_user_id];
+      sendToServer("create_chat", "?user_id="+user_id+"&invited="+invited.toString());
+    }
+
+    function joinChat(chat_id) {
+      sendToServer("join_chat", "?user_id="+user_id+"&chat_id="+invited.toString());
+    }
+
     function updateHeader(cmd) {
       if (cmd == "signout") {
         // replace signout_header with signin_header
@@ -103,11 +117,34 @@
       }
     }
 
-    function updateChatList(response) {
+    function updateActiveList(response) {
       console.log("updating chat list");
-      console.log(response["user_list"]);
-      console.log(response["user_list"].length);
-      console.log(response["user_list"][0]);
+      var user_list = response["user_list"];
+      var chat_list = response["chat_list"];
+      var userListElement = document.getElementById("user_list");
+      var chatListElement = document.getElementById("chat_list");
+      while (userListElement.firstChild) {
+            userListElement.removeChild(userListElement.firstChild);
+      }
+      while (chatListElement.firstChild) {
+            chatListElement.removeChild(chatListElement.firstChild);
+      }
+      for (int i=0; i < user_list.length; i++) {
+        var liElement = document.createElement("li");
+        var buttonElement = document.createElement("button");
+        buttonElement.innerHTML = user_list[i];
+        buttonElement.setAttribute("onclick", "createChat('user_list[i]');");
+        liElement.appendChild(buttonElement);
+        userListElement.appendChild(liElement);
+      }
+      for (int i=0; i < chat_list.length; i++) {
+        var liElement = document.createElement("li");
+        var buttonElement = document.createElement("button");
+        buttonElement.setAttribute("onclick", "joinChat('chat_list[i]');");
+        buttonElement.innerHTML = chat_list[i];
+        liElement.appendChild(buttonElement);
+        chatListElement.appendChild(liElement);
+      }
     }
 
     function displayError(msg) {
@@ -145,7 +182,7 @@
             console.log("parsedResponse: ");
             console.log(response);
             if (cmd == "active_list") {
-              updateChatList(response);
+              updateActiveList(response);
             }
           }
         } else if (this.readyState == 4 && this.status == 404) {

@@ -14,7 +14,7 @@
       <div id="signout_header" class="hide">
         <button id="user_id_display"></button>
         <button id="signout" onclick="signout();">Sign Out</button>
-        <button id="update" onclick="updateActiveList();">Update</button>
+        <button id="update" onclick="sendToServer('active_list')">Update</button>
       </div>
     </header>
     <content>
@@ -141,7 +141,7 @@
         var liElement = document.createElement("li");
         var buttonElement = document.createElement("button");
         buttonElement.innerHTML = user_list[i];
-        buttonElement.setAttribute("onclick", "createChat('user_list[i]');");
+        buttonElement.setAttribute("onclick", "createChat("+user_list[i]+");");
         liElement.appendChild(buttonElement);
         userListElement.appendChild(liElement);
       }

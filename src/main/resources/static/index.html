@@ -6,10 +6,11 @@
   </head>
   <body> <header>
       <div id="signin_header">
-        <input id="user_id" placeholder="username"></input>
+        <input id="user_id" placeholder="type your username..."></input>
         <br>
         <button id="signin" onclick="signin();">Sign In</button><button id="signup" onclick="signup();">Sign Up</button>
-        <span id="signin_error"></span>
+        <br>
+        <div id="signin_error"></div>
       </div>
       <div id="signout_header" class="hide">
         <button id="user_id_display"></button>
@@ -44,6 +45,11 @@
       height: 100%;
       font-family: Helvetica, arial, sans-serif;
     }
+    button {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
     .hide {
       display: none;
     }
@@ -67,17 +73,34 @@
       height: 3em;
       background: #eee;
       padding: 0 1em;
+      border: solid 1px lightgray;
+      border-left: 0px;
     }
     #update, #signup, #signin, #signout {
+      -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+         -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+              box-sizing: border-box;         /* Opera/IE 8+ */
       font-size: 1em;
       background: #ddd;
       width: 12.5%;
       height: 3em;
+      border: solid 1px lightgray;
+      border-left: 0px;
+      border-top: 0px;
+    }
+    #signin_error {
+      -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+         -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+              box-sizing: border-box;         /* Opera/IE 8+ */
+      padding: 1em;
+      width: 25%;
+      color: red;
     }
     #user_list button, #chat_list button {
       font-size: 1em;
       width: 100%;
       height: 3em;
+      padding: 0 1em;
     }
     #user_list button {
       background: #eee;
@@ -87,9 +110,6 @@
     }
     #update:hover, #signup:hover, #signin:hover, #signout:hover, #user_list button:hover, #chat_list button:hover {
       background: #ccc;
-    }
-    #active_list_wrapper button {
-      width: 100%;
     }
     #messages_wrapper {
       width: 75%;
@@ -101,11 +121,16 @@
       top: 0;
     }
     #active_list_wrapper {
+      -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+         -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+              box-sizing: border-box;         /* Opera/IE 8+ */
       width: 25%;
       height: 100%;
+      padding-top: 6em;
       background-color: #fcfcfc;
       border: solid 1px lightgray;
       border-left: 0px;
+      border-top: 0px;
       z-index: 999;
     }
     #new_message_wrapper {
@@ -129,6 +154,7 @@
       bottom: 0;
       right: 15%;
       border: solid 1px lightgray;
+      border-left: 0px;
     }
     #send {
       -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
@@ -156,6 +182,14 @@
     var user_id = "";
     var chat_id = "";
 
+		document.getElementById("user_id")
+				.addEventListener("keyup", function(event) {
+				event.preventDefault();
+				if (event.keyCode == 13) {
+          document.getElementById("signin").click();
+				}
+		});
+
 		document.getElementById("new_message")
 				.addEventListener("keyup", function(event) {
 				event.preventDefault();
@@ -166,8 +200,11 @@
 
 		function signup() {
       user_id = document.getElementById("user_id").value;
-			sendToServer("signup","?user_id="+user_id);
-			console.log("signing up: "+user_id);
+      if (user_id != "") {
+        sendToServer("signup","?user_id="+user_id);
+        console.log("signing up: "+user_id);
+      }
+      displayError("Username cannot be empty.");
 		}
 
 		function signin() {
@@ -223,12 +260,14 @@
             chatListElement.removeChild(chatListElement.firstChild);
       }
       for (var i=0; i < user_list.length; i++) {
-        var liElement = document.createElement("li");
-        var buttonElement = document.createElement("button");
-        buttonElement.innerHTML = user_list[i];
-        buttonElement.setAttribute("onclick", "createChat('"+user_list[i]+"');");
-        liElement.appendChild(buttonElement);
-        userListElement.appendChild(liElement);
+        if (user_list[i] != user_id) {
+          var liElement = document.createElement("li");
+          var buttonElement = document.createElement("button");
+          buttonElement.innerHTML = user_list[i];
+          buttonElement.setAttribute("onclick", "createChat('"+user_list[i]+"');");
+          liElement.appendChild(buttonElement);
+          userListElement.appendChild(liElement);
+        }
       }
       for (var i=0; i < chat_list.length; i++) {
         var liElement = document.createElement("li");

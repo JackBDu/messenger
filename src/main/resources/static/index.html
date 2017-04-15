@@ -12,9 +12,9 @@
         <button id="signup" onclick="signup();">Sign Up</button>
         <span id="signin_error"></span>
       </div>
-      <div id="hello_header" class="hide">
-        <span id="user_id_display"></span>
-        <button id="signout" onclick="signout();">Log Out</button>
+      <div id="signout_header" class="hide">
+        <button id="user_id_display"></button>
+        <button id="signout" onclick="signout();">Sign Out</button>
       </div>
     </header>
     <content>
@@ -33,23 +33,27 @@
     html, body {
       width: 100%;
       height: 100%;
+      font-family: Helvetica, arial, sans-serif;
     }
     .hide {
       display: none;
     }
-    #user_id {
+    #user_id, #user_id_display {
       font-size: 1em;
       width: 10em;
       height: 2em;
       background: #eef;
       padding: 0 0.5em;
     }
-    #signup, #signin {
+    #signup, #signin, #signout {
       margin: 0;
       font-size: 1em;
       background: #ddf;
       width: 5em;
       height: 2em;
+    }
+    #signup:hover, #signin:hover, #signout:hover {
+      background: #aaf;
     }
   </style>
   <script>
@@ -60,26 +64,40 @@
 				.addEventListener("keyup", function(event) {
 				event.preventDefault();
 				if (event.keyCode == 13) {
-						document.getElementById("send").click();
+          document.getElementById("send").click();
 				}
 		});
 
 		function signup() {
       user_id = document.getElementById("user_id").value;
-			console.log("signup: "+user_id);
-			sendToServer("signup"+"?user_id"+"="+user_id);
+			sendToServer("signup"+"?user_id="+user_id);
+			console.log("signing up: "+user_id);
 		}
 
 		function signin() {
       user_id = document.getElementById("user_id").value;
-			console.log("signin: "+user_id);
-			sendToServer("signin","?user_id"+"="+user_id);
+			sendToServer("signin","?user_id="+user_id);
+			console.log("signing in: "+user_id);
 		}
 
-    function displayHelloHeader() {
-      document.getElementById("signin_header").display = "none";
-      document.getElementById("hello_header").innerHTML = user_id;
-      document.getElementById("hello_header").display = "block";
+    function signout() {
+			sendToServer("signout","?user_id="+user_id);
+      console.log("signed out: "+user_id);
+      user_id = "";
+    }
+
+    function updateHeader(cmd) {
+      if (cmd == "signout") {
+        // replace signout_header with signin_header
+        document.getElementById("signin_header").setAttribute("class", "hide");
+        document.getElementById("signout_header").innerHTML = user_id;
+        document.getElementById("signout_header").setAttribute("class", "");
+      } else {
+        // replace signin_header with signout_header
+        document.getElementById("signout_header").setAttribute("class", "hide");
+        document.getElementById("signout_header").innerHTML = "";
+        document.getElementById("signin_header").setAttribute("class", "");
+      }
     }
 
     function updateChatList() {
@@ -95,27 +113,33 @@
 			xhttp.onreadystatechange = function() {
 				if (this.readyState == 4 && this.status == 200) {
           var responseText = this.responseText;
-          console.log(responseText);
+          console.log("responseText: "+responseText);
+          // signin
           if (cmd == "signin") {
             if (responseText == "true") {
-              displayHelloHeader();
+              updateHeader(cmd);
               sendToServer("active_list");
             } else {
-              console.log("user not found");
+              console.log("displaying username not found");
               displayError("Username not found.");
             }
+          // signup
           } else if (cmd == "signup") {
             if (responseText == "true") {
-              displayHelloHeader();
+              updateHeader(cmd);
               sendToServer("active_list");
             } else {
-              console.log("already exists");
+              console.log("displaying username already exists");
               displayError("Username already exists.");
             }
+          } else if (cmd == "signout") {
+              updateHeader("signout");
+              displayError("Successfully signed out.");
           } else {
             var response = JSON.parse(responseText);
+            console.log("parsedResponse: ");
             console.log(response);
-            if (cmd == "get_list") {
+            if (cmd == "active_list") {
               updateChatList(response);
             }
           }

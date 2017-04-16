@@ -295,10 +295,10 @@
       var ulElement = document.getElementById("messages");
       for (var i = 0; i < messages.length; i++) {
         var liElement = document.createElement("li");
-        if (messages[i].user_id == user_id) {
+        if (messages[i][sender].id == user_id) {
           liElement.setAttribute("class", "right");
         }
-        liElement.innerHTML = messages[i].user_id+": "+messages[i].content;
+        liElement.innerHTML = messages[i][sender].id+": "+messages[i][content];
         ulElement.appendChild(liElement);
         ulElement.scrollTop = ulElement.scrollHeight;
     }
@@ -533,8 +533,8 @@
               }
               sendToServer("active_list");
             } else if (cmd == "check_msg") {
-              if (response[0] != "0") {
-                updateMessage(response[1]);
+              if (response.length) {
+                updateMessage(response);
               }
             }
           }

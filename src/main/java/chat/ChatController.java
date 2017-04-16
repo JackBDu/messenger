@@ -43,6 +43,13 @@ public class ChatController {
     	return activeChatUserManager.createNewChat(uid, invited_user);
     }
     
+    @RequestMapping(value="/join_chat", method=RequestMethod.GET)
+    @ResponseBody   
+    public Map<String, String> joinChat(@RequestParam(value="user_id", required=true) String uid,
+    		@RequestParam(value="chat_id", required=true) String cid){
+    	return activeChatUserManager.joinExistingChat(uid, cid);
+    }
+    
     @RequestMapping(value="/new_msg", method=RequestMethod.GET)
     @ResponseBody
     public boolean sendNewMessage(@RequestParam(value="user_id", required=true) String uid,
@@ -51,12 +58,7 @@ public class ChatController {
     	return true;
     }
     
-    @RequestMapping(value="/join_chat", method=RequestMethod.GET)
-    @ResponseBody   
-    public ArrayList<String> joinChat(@RequestParam(value="user_id", required=true) String uid,
-    		@RequestParam(value="chat_id", required=true) String cid){
-    	return null;
-    }
+
     
     
     @RequestMapping(value="/signout", method=RequestMethod.GET)

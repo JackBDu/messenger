@@ -10,8 +10,8 @@ class ActiveChatUserManager {
 	ArrayList<Chat> activeChat;
 	
 	Map<Integer, String> msgMapping;
-	Map<String, ArrayList<User>> chatToUsers; // chat_id to ArrayList of users
-	Map<Integer, ArrayList<Message>> usersToMessage; // hash(ArrayList of Users) to ArrayList of Message
+	Map<String, ArrayList<User>> chatIdToUsers; // chat_id to ArrayList of users in this chat
+	Map<Integer, Chat> usersToChat; // hash(ArrayList of Users in a chat) to this chat
 	Map<Integer, Map<User, Boolean>> msgToUserStatus; 
 	
 	ActiveChatUserManager(){
@@ -19,8 +19,8 @@ class ActiveChatUserManager {
 		this.activeChat = new ArrayList<Chat>();
 		
 		this.msgMapping = new HashMap<Integer, String>();
-		this.chatToUsers = new HashMap<String, ArrayList<User>>(); 
-		this.usersToMessage = new HashMap<Integer, ArrayList<Message>>();
+		this.chatIdToUsers = new HashMap<String, ArrayList<User>>(); 
+		this.usersToChat = new HashMap<Integer, Chat>();
 		this.msgToUserStatus = new HashMap<Integer, Map<User, Boolean>>();
 	}
 	
@@ -65,15 +65,18 @@ class ActiveChatUserManager {
 		Map<String, String> newChatResponse = new HashMap<String, String>();
 		ArrayList<User> allUsers = this.getAllUsers(invited_user, uid);		
 		Integer chatUsersHash = this.getChatUsersHash(allUsers);
-		if (this.usersToMessage.containsKey(chatUsersHash)){
+		
+		if (this.usersToChat.containsKey(chatUsersHash)){
+			Chat tempChat = this.usersToChat.get(chatUsersHash);
 			newChatResponse.put("status", String.valueOf(0));
-			newChatResponse.put("chat_id", String.valueOf(-1));
-			newChatResponse.put("all_users", "");
+			newChatResponse.put("chat_id", tempChat.getId());
+			newChatResponse.put("all_users", tempChat.getUsers().toString());
 		}else{
-			String chatID = String.valueOf(this.chatToUsers.size());
-			this.chatToUsers.put(chatID, allUsers);
-			this.usersToMessage.put(chatUsersHash, new ArrayList<Message>());
-			this.activeChat.add(new Chat(chatID, allUsers));
+			String chatID = String.valueOf(this.chatIdToUsers.size());
+			Chat newChat = new Chat(chatID, allUsers);
+			this.usersToChat.put(chatUsersHash, newChat);
+			this.activeChat.add(newChat);
+			this.chatIdToUsers.put(chatID, allUsers);
 			
 			newChatResponse.put("status", String.valueOf(1));
 			newChatResponse.put("chat_id", chatID);
@@ -100,6 +103,41 @@ class ActiveChatUserManager {
 	
 	private Integer getChatUsersHash(ArrayList<User> chatUsers){
 		return chatUsers.toString().hashCode();
+	}
+
+	public Map<String, String> joinExistingChat(String uid, String cid) {
+		Map<String, String> joinChatResponse = new HashMap<String, String>();
+		boolean chatExist = this.chatIdToUsers.containsKey(cid);
+		if (!chatExist){
+			System.out.println("Chat does not exist and chat id is" + cid);
+			return null;
+		} else{
+			User newUser = new User(uid);
+			if (chatExist && this.chatIdToUsers.get(cid).contains(newUser)){
+				joinChatResponse.put("status", String.valueOf(0));
+				joinChatResponse.put("chat_id", cid);
+				joinChatResponse.put("all_users", this.chatIdToUsers.get(cid).toString());
+			} else{
+				
+				int oldUsersHash = this.getChatUsersHash(this.chatIdToUsers.get(cid));
+						
+				// update chatIdToUsers structure							
+				this.chatIdToUsers.get(cid).add(newUser);				
+				System.out.println("after adding a new user..." + this.chatIdToUsers.get(cid).toString());
+				
+				int newUsersHash = this.getChatUsersHash(this.chatIdToUsers.get(cid));		
+				Chat oldChat = this.usersToChat.get(oldUsersHash);
+
+				this.usersToChat.put(newUsersHash, oldChat);				
+				this.usersToChat.remove(oldUsersHash); 
+				
+				joinChatResponse.put("status", String.valueOf(1));
+				joinChatResponse.put("chat_id", cid);
+				joinChatResponse.put("all_users", this.chatIdToUsers.get(cid).toString());
+			}
+		}
+
+		return joinChatResponse;
 	}
 	
 }

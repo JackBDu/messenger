@@ -6,7 +6,7 @@ public class User implements Comparable<User>{
 	
 	User(String uname){
 		this.name = uname;
-		this.id = uname.hashCode();
+		this.id = this.name.hashCode();
 	}
 
 	@Override
@@ -22,13 +22,6 @@ public class User implements Comparable<User>{
 		this.name = name;
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		return result;
-	}
 
 	@Override
 	public boolean equals(Object obj) {
@@ -53,7 +46,4 @@ public class User implements Comparable<User>{
 		return Integer.compare(this.id, u.id);
 	}
 
-	
-	
-	
 }

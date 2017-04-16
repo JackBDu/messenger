@@ -282,8 +282,10 @@
     }
 
     function addUser(selected_user_id) {
-      invited_users.push(selected_user_id);
-      displaySelection();
+      if (not(invited_users.includes(selected_user_id))) {
+        invited_users.push(selected_user_id);
+        displaySelection();
+      }
     }
 
     function displaySelection() {

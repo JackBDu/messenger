@@ -125,7 +125,9 @@ class ActiveChatUserManager {
 				
 				int newUsersHash = this.getChatUsersHash(this.chatIdToUsers.get(cid));		
 				Chat oldChat = this.usersToChat.get(oldUsersHash);
-
+				for (Message msg:oldChat.messages){
+					msg.updateReceivers(uid);
+				}
 				this.usersToChat.put(newUsersHash, oldChat);				
 				this.usersToChat.remove(oldUsersHash); 
 				
@@ -154,16 +156,12 @@ class ActiveChatUserManager {
 		for (Message msg : chat.getMessages()){
 			System.out.println(msg.content);
 			System.out.println(msg.receivers.toString());
-			System.out.println(uid);
-			System.out.println(msg.receivers.get(uid));
 			boolean isRead = msg.receivers.get(uid);
 			System.out.println(isRead);
 			if (! isRead){
 				unreadMessages.add(msg);
 				msg.receivers.replace(uid, true);
 			}
-			System.out.print("This should be true...");
-			System.out.println(msg.getReceivers().get(uid));
 		}
 		return unreadMessages;
 	}

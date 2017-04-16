@@ -20,6 +20,10 @@ public class Message {
 			this.receivers.put(usr.name, false);
 		}		
 	}
+	
+	public void updateReceivers(String uid){
+		this.receivers.put(uid, false);
+	}
 
 	public String getContent() {
 		return content;

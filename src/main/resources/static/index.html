@@ -21,7 +21,7 @@
         <div id="signout_msg" class="hide">Nobody's online :(</div>
       </div>
     </header>
-    <div id="content" class="hide">
+    <div id="content" class="hid">
       <div id="chat_header">
         <div id="new_chat" class="hide"></div><button id="start" onclick="createChat();">Start</button>
         <div id="current_chat"><button id="current_chat_id"></button><button id="leave" onclick="leaveChat();">Leave</button></div>
@@ -150,11 +150,11 @@
       padding: 0 1em;
       border-bottom: solid 1px lightgray;
     }
-    #active_chats {
-      border-right: solid 1px lightgray;
+    #active_users {
+      border-left: solid 1px lightgray;
     }
     .selected#active_users, .selected#active_chats {
-      border-bottom: 0px;
+      border-bottom: solid 1px #fcfcfc;
     }
     #user_list button, #chat_list button {
       font-size: 1em;

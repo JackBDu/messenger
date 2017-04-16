@@ -314,7 +314,7 @@
     function polling() {
       refresh();
       if (user_id) {
-        setTimeout(polling, 1000);
+        setTimeout(polling, 2000);
       }
     }
 
@@ -383,9 +383,9 @@
       user_id = document.getElementById("user_id").value;
       if (user_id != "") {
         sendToServer("signup","?user_id="+user_id);
-        console.log("signing up: "+user_id);
+        //console.log("signing up: "+user_id);
       } else {
-        console.log("displaying username cannot be empty");
+        //console.log("displaying username cannot be empty");
         displayError("Username cannot be empty.");
       }
 		}
@@ -393,12 +393,12 @@
 		function signin() {
       user_id = document.getElementById("user_id").value;
 			sendToServer("signin","?user_id="+user_id);
-			console.log("signing in: "+user_id);
+			//console.log("signing in: "+user_id);
 		}
 
     function signout() {
 			sendToServer("signout","?user_id="+user_id);
-      console.log("signed out: "+user_id);
+      //console.log("signed out: "+user_id);
     }
 
     function displayError(msg) {
@@ -435,7 +435,7 @@
     }
 
     function updateActiveList(response) {
-      console.log("updating chat list");
+      //console.log("updating chat list");
       var user_list = response["user_list"];
       var chat_list = response["chat_list"];
       var userListElement = document.getElementById("user_list");
@@ -480,12 +480,12 @@
     }
 
 		function sendToServer(cmd, info="") {
-      console.log("sendToServer: "+cmd+info);
+      //console.log("sendToServer: "+cmd+info);
 			var xhttp = new XMLHttpRequest();
 			xhttp.onreadystatechange = function() {
 				if (this.readyState == 4 && this.status == 200) {
           var responseText = this.responseText;
-          console.log("responseText: "+responseText);
+          //console.log("responseText: "+responseText);
           // signin
           if (cmd == "signin") {
             if (responseText == "1") {
@@ -493,7 +493,7 @@
               sendToServer("active_list");
               polling();
             } else {
-              console.log("displaying username not found");
+              //console.log("displaying username not found");
               displayError("Username not found.");
             }
           // signup
@@ -501,7 +501,7 @@
             if (responseText == "1") {
               sendToServer("signin", info);
             } else {
-              console.log("displaying username already exists");
+              //console.log("displaying username already exists");
               displayError("Username already exists.");
             }
           } else if (cmd == "signout") {
@@ -524,19 +524,19 @@
               updateActiveList(response);
             } else if (cmd == "create_chat") {
               if (response["status"]=="1") {
-                console.log("chat created: "+response["chat_id"]);
+                //console.log("chat created: "+response["chat_id"]);
                 switchChat(response["chat_id"], response["all_users"]);
                 sendToServer("active_list");
               } else {
-                console.log("chat already exists OR chat failed to create.");
+                //console.log("chat already exists OR chat failed to create.");
                 switchChat(response["chat_id"], response["all_users"]);
               }
             } else if (cmd == "join_chat") {
               if (response["status"]=="1") {
-                console.log("new chat joined");
+                //console.log("new chat joined");
                 switchChat(response["chat_id"], response["all_users"]);
               } else {
-                console.log("old chat joined");
+                //console.log("old chat joined");
                 switchChat(response["chat_id"], response["all_users"]);
               }
               sendToServer("active_list");

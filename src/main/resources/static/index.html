@@ -25,7 +25,7 @@
     <div id="content" class="hide">
       <div id="chat_header">
         <div id="new_chat" class="hide"></div><button id="start" onclick="createChat();">Start</button>
-        <div id="current_chat"><button id="current_chat_display_name"></button><button id="leave" onclick="leaveChat();">Leave</button></div>
+        <div id="current_chat"><button id="current_chat_display_name"></button><button id="leave" onclick="sendEmoji();">:D</button></div>
       </div>
       <div id="messages_wrapper">
         <ul id="messages">
@@ -290,6 +290,14 @@
           document.getElementById("send").click();
 				}
 		});
+
+    function sendEmoji() {
+      var newMessage = ":D";
+      if (newMessage && user_id && chat_id) {
+        document.getElementById("new_message").value = "";
+        sendToServer("new_msg", "?user_id="+user_id+"&chat_id="+chat_id+"&msg="+newMessage);
+      }
+    }
 
     function updateMessage(messages) {
       var ulElement = document.getElementById("messages");

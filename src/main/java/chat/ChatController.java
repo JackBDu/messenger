@@ -9,11 +9,8 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 public class ChatController {
 	
-	ArrayList<String> activeUsers = new ArrayList<String>();
-	ArrayList<String> activeChat = new ArrayList<String>();
-	ActiveChatUserManager activeChatUserManager = new ActiveChatUserManager(activeUsers, activeChat);
-	
-    
+	ActiveChatUserManager activeChatUserManager = new ActiveChatUserManager();
+	 
     @RequestMapping(value="/signin", method=RequestMethod.GET)
     @ResponseBody
     public int signIn(@RequestParam(value="user_id", required=true) String uid) {   	
@@ -40,14 +37,46 @@ public class ChatController {
     
     @RequestMapping(value="/create_chat", method=RequestMethod.GET)
     @ResponseBody   
-    public Map<String, Integer> createNewChat(@RequestParam(value="user_id", required=true) String uid,
+    public Map<String, String> createNewChat(@RequestParam(value="user_id", required=true) String uid,
     		@RequestParam(value="invited", required=true) String invited_user){
     	
     	return activeChatUserManager.createNewChat(uid, invited_user);
     }
     
+    @RequestMapping(value="/new_msg", method=RequestMethod.GET)
+    @ResponseBody
+    public boolean sendNewMessage(@RequestParam(value="user_id", required=true) String uid,
+    		@RequestParam(value="chat_id", required=true) String cid,
+    		@RequestParam(value="msg", required=true) String msg){
+    	return true;
+    }
     
-
+    @RequestMapping(value="/join_chat", method=RequestMethod.GET)
+    @ResponseBody   
+    public ArrayList<String> joinChat(@RequestParam(value="user_id", required=true) String uid,
+    		@RequestParam(value="chat_id", required=true) String cid){
+    	return null;
+    }
     
+    
+    @RequestMapping(value="/signout", method=RequestMethod.GET)
+    @ResponseBody
+    public boolean signOutUser(@RequestParam(value="user_id", required=true) String uid){
+    	return true;
+    }
+    
+    @RequestMapping(value="/leave_chat", method=RequestMethod.GET)
+    @ResponseBody
+    public boolean leaveChat(@RequestParam(value="user_id", required=true) String uid,
+    		@RequestParam(value="chat_id", required=true) String cid){
+    	return true;
+    }
+    
+    @RequestMapping(value="/check_msg", method=RequestMethod.GET)
+    @ResponseBody
+    public ArrayList<String> getNewMessage(@RequestParam(value="chat_id", required=true) String cid,
+    		@RequestParam(value="user_id", required=true) String uid){
+    	return null;
+    }
 
 }

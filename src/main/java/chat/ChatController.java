@@ -55,11 +55,15 @@ public class ChatController {
     public boolean sendNewMessage(@RequestParam(value="user_id", required=true) String uid,
     		@RequestParam(value="chat_id", required=true) String cid,
     		@RequestParam(value="msg", required=true) String msg){
-    	return true;
+    	return activeChatUserManager.sendNewMessage(uid, cid, msg);
     }
     
-
-    
+    @RequestMapping(value="/check_msg", method=RequestMethod.GET)
+    @ResponseBody
+    public ArrayList<String> getNewMessage(@RequestParam(value="chat_id", required=true) String cid,
+    		@RequestParam(value="user_id", required=true) String uid){
+    	return null;
+    } 
     
     @RequestMapping(value="/signout", method=RequestMethod.GET)
     @ResponseBody
@@ -74,11 +78,6 @@ public class ChatController {
     	return true;
     }
     
-    @RequestMapping(value="/check_msg", method=RequestMethod.GET)
-    @ResponseBody
-    public ArrayList<String> getNewMessage(@RequestParam(value="chat_id", required=true) String cid,
-    		@RequestParam(value="user_id", required=true) String uid){
-    	return null;
-    }
+    
 
 }

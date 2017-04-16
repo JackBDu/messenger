@@ -12,7 +12,7 @@ public class Message {
 	
 	Message(String msg, User sndr, ArrayList<User> userInMsg){
 		this.content = msg;
-		this.id = msg.hashCode();
+		this.id = this.content.hashCode();
 		this.sender = sndr;
 		for (User usr: userInMsg){
 			this.receivers.put(usr, false);

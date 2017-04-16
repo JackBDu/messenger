@@ -8,8 +8,7 @@ class ActiveChatUserManager {
 	
 	ArrayList<User> activeUsers; 
 	ArrayList<Chat> activeChat;
-	
-	Map<Integer, String> msgMapping;
+
 	Map<String, ArrayList<User>> chatIdToUsers; // chat_id to ArrayList of users in this chat
 	Map<Integer, Chat> usersToChat; // hash(ArrayList of Users in a chat) to this chat
 	Map<Integer, Map<User, Boolean>> msgToUserStatus; 
@@ -18,7 +17,6 @@ class ActiveChatUserManager {
 		this.activeUsers = new ArrayList<User>();
 		this.activeChat = new ArrayList<Chat>();
 		
-		this.msgMapping = new HashMap<Integer, String>();
 		this.chatIdToUsers = new HashMap<String, ArrayList<User>>(); 
 		this.usersToChat = new HashMap<Integer, Chat>();
 		this.msgToUserStatus = new HashMap<Integer, Map<User, Boolean>>();
@@ -138,6 +136,15 @@ class ActiveChatUserManager {
 		}
 
 		return joinChatResponse;
+	}
+
+	public boolean sendNewMessage(String uid, String cid, String msg) {
+		ArrayList<User> userInChat = this.chatIdToUsers.get(cid);
+		int chatUsersHash = this.getChatUsersHash(userInChat);
+		Chat chat = this.usersToChat.get(chatUsersHash);
+		Message newMsg = new Message(msg, new User(uid), userInChat);
+		if (chat.messages.add(newMsg)) return true;
+		else return false;
 	}
 	
 }

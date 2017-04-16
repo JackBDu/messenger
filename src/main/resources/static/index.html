@@ -273,7 +273,6 @@
 
     var user_id = "";
     var chat_id = "";
-    var chat_users = "";
     var invited_users = [];
 
 		document.getElementById("user_id")
@@ -296,10 +295,10 @@
       var ulElement = document.getElementById("messages");
       for (var i = 0; i < messages.length; i++) {
         var liElement = document.createElement("li");
-        if (messages[i].user_id == user_id) {
+        if (messages[i][sender].id == user_id) {
           liElement.setAttribute("class", "right");
         }
-        liElement.innerHTML = messages[i].user_id+": "+messages[i].content;
+        liElement.innerHTML = messages[i][sender].id+": "+messages[i][content];
         ulElement.appendChild(liElement);
         ulElement.scrollTop = ulElement.scrollHeight;
     }
@@ -393,7 +392,6 @@
     function signout() {
 			sendToServer("signout","?user_id="+user_id);
       console.log("signed out: "+user_id);
-      user_id = "";
     }
 
     function displayError(msg) {
@@ -500,6 +498,9 @@
             }
           } else if (cmd == "signout") {
               updateHeader("signout");
+              user_id = "";
+              chat_id = "";
+              invited_users = []
               displayError("Successfully signed out.");
           } else if (cmd == "leave_chat") {
               if (responseText == "1") {
@@ -532,8 +533,8 @@
               }
               sendToServer("active_list");
             } else if (cmd == "check_msg") {
-              if (response[0] != "0") {
-                updateMessage(response[1]);
+              if (response.length) {
+                updateMessage(response);
               }
             }
           }

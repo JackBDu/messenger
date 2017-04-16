@@ -311,6 +311,13 @@
       }
     }
 
+    function polling() {
+      refresh();
+      if (user_id) {
+        setTimeout(polling, 1000);
+      }
+    }
+
     function addUser(selected_user_id) {
       if (!invited_users.includes(selected_user_id)) {
         invited_users.push(selected_user_id);
@@ -484,6 +491,7 @@
             if (responseText == "1") {
               updateHeader(cmd);
               sendToServer("active_list");
+              polling();
             } else {
               console.log("displaying username not found");
               displayError("Username not found.");

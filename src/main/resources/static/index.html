@@ -289,7 +289,7 @@
     function refresh() {
       sendToServer('active_list');
       if (chat_id) {
-        sendToServer('check_message', "?chat_id="+chat_id);
+        sendToServer('check_msg', "?user_id="+user_id+"&chat_id="+chat_id);
       }
     }
 
@@ -508,7 +508,7 @@
                 chat_id = ""
               }
               sendToServer("active_list");
-            } else if (cmd == "check_message") {
+            } else if (cmd == "check_msg") {
               if (response[0] != "0") {
                 updateMessage(response[1]);
               }

@@ -24,7 +24,7 @@
     <div id="content" class="hide">
       <div id="chat_header">
         <div id="new_chat" class="hide"></div><button id="start" onclick="createChat();">Start</button>
-        <div id="current_chat"><button id="current_chat_id"></button><button id="leave" onclick="leaveChat();">Leave</button></div>
+        <div id="current_chat"><button id="current_chat_display_name"></button><button id="leave" onclick="leaveChat();">Leave</button></div>
       </div>
       <div id="messages_wrapper">
         <ul id="messages">
@@ -96,7 +96,7 @@
       height: 100%;
       width: 100%;
     }
-    #current_chat_id {
+    #current_chat_display_name {
       width: 80%;
       height: 100%;
       font-size: 1em;
@@ -256,6 +256,7 @@
 
     var user_id = "";
     var chat_id = "";
+    var chat_users = "";
     var invited_users = [];
 
 		document.getElementById("user_id")
@@ -329,7 +330,7 @@
       }
     }
 
-    function switchChat(new_chat_id) {
+    function switchChat(new_chat_id, all_users) {
       var messagesElement = document.getElementById("messages");
       while (messagesElement.firstChild) {
             messagesElement.removeChild(messagesElement.firstChild);
@@ -337,7 +338,7 @@
       document.getElementById("new_chat").setAttribute("class", "hide");
       document.getElementById("current_chat").setAttribute("class", "");
       chat_id = new_chat_id;
-      document.getElementById("current_chat_id").innerHTML = chat_id;
+      document.getElementById("current_chat_display_name").innerHTML = chat_id+": "+all_users.substring(1, all_users.length - 1);
     }
 
     function switchToChats() {
@@ -494,15 +495,16 @@
             } else if (cmd == "create_chat") {
               if (response["status"]=="1") {
                 console.log("chat created: "+response["chat_id"]);
-                switchChat(response["chat_id"]);
+                switchChat(response["chat_id"], response["all_users"]);
                 sendToServer("active_list");
               } else {
-                console.log("chat failed to create");
+                console.log("chat already exists OR chat failed to create.");
+                switchChat(response["chat_id"], response["all_users"]);
               }
             } else if (cmd == "join_chat") {
               if (response["status"]=="1") {
                 console.log("chat joined");
-                switchChat(chat_id);
+                switchChat(chat_id, response["all_users"]);
               } else {
                 console.log("chat failed");
                 chat_id = ""

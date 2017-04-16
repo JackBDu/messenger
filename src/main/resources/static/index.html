@@ -298,7 +298,7 @@
         if (messages[i]["sender"].id == user_id) {
           liElement.setAttribute("class", "right");
         }
-        liElement.innerHTML = messages[i]["sender"].id+": "+messages[i][content];
+        liElement.innerHTML = messages[i]["sender"].id+": "+messages[i]["content"];
         ulElement.appendChild(liElement);
         ulElement.scrollTop = ulElement.scrollHeight;
     }

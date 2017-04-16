@@ -1,6 +1,7 @@
 package main.java.chat;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 public class Message {
@@ -8,14 +9,15 @@ public class Message {
 	int id;
 	
 	User sender;
-	Map<User, Boolean> receivers;
+	Map<String, Boolean> receivers;
 	
 	Message(String msg, User sndr, ArrayList<User> userInMsg){
 		this.content = msg;
 		this.id = this.content.hashCode();
 		this.sender = sndr;
+		this.receivers = new HashMap<String, Boolean>();
 		for (User usr: userInMsg){
-			this.receivers.put(usr, false);
+			this.receivers.put(usr.name, false);
 		}		
 	}
 
@@ -43,11 +45,11 @@ public class Message {
 		this.sender = sender;
 	}
 
-	public Map<User, Boolean> getReceivers() {
+	public Map<String, Boolean> getReceivers() {
 		return receivers;
 	}
 
-	public void setReceivers(Map<User, Boolean> receivers) {
+	public void setReceivers(Map<String, Boolean> receivers) {
 		this.receivers = receivers;
 	}
 

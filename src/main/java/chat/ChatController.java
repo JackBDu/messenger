@@ -60,9 +60,9 @@ public class ChatController {
     
     @RequestMapping(value="/check_msg", method=RequestMethod.GET)
     @ResponseBody
-    public ArrayList<String> getNewMessage(@RequestParam(value="chat_id", required=true) String cid,
+    public ArrayList<Message> pullNewMessage(@RequestParam(value="chat_id", required=true) String cid,
     		@RequestParam(value="user_id", required=true) String uid){
-    	return null;
+    	return activeChatUserManager.pullNewMessage(cid, uid);
     } 
     
     @RequestMapping(value="/signout", method=RequestMethod.GET)

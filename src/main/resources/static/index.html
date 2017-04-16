@@ -517,6 +517,10 @@
               user_id = "";
               chat_id = "";
               invited_users = []
+              var messagesElement = document.getElementById("messages");
+              while (messagesElement.firstChild) {
+                  messagesElement.removeChild(messagesElement.firstChild);
+              }
               displayError("Successfully signed out.");
           } else if (cmd == "leave_chat") {
               if (responseText == "1") {

@@ -282,7 +282,7 @@
     }
 
     function addUser(selected_user_id) {
-      if (not(invited_users.includes(selected_user_id))) {
+      if (!invited_users.includes(selected_user_id)) {
         invited_users.push(selected_user_id);
         displaySelection();
       }

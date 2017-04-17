@@ -145,6 +145,8 @@ class ActiveChatUserManager {
 		int chatUsersHash = this.getChatUsersHash(userInChat);
 		Chat chat = this.usersToChat.get(chatUsersHash);
 		Message newMsg = new Message(msg, new User(uid), userInChat);
+		System.out.print(uid + " says: ");
+		System.out.println(newMsg.content);
 		if (chat.messages.add(newMsg)) return true;
 		else return false;
 	}
@@ -154,10 +156,10 @@ class ActiveChatUserManager {
 		Chat chat = this.usersToChat.get(chatUsersHash);
 		ArrayList<Message> unreadMessages = new ArrayList<Message>();
 		for (Message msg : chat.getMessages()){
-			System.out.println(msg.content);
-			System.out.println(msg.receivers.toString());
+//			System.out.println(msg.content);
+//			System.out.println(msg.receivers.toString());
 			boolean isRead = msg.receivers.get(uid);
-			System.out.println(isRead);
+//			System.out.println(isRead);
 			if (! isRead){
 				unreadMessages.add(msg);
 				msg.receivers.replace(uid, true);

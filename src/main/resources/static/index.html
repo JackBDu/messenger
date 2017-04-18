@@ -390,12 +390,12 @@
 
 		function signup() {
       user_id = document.getElementById("user_id").value;
-      if (user_id != "") {
+      if (user_id != "" && /^[a-zA-Z\-]+$/.test(user_id)) {
         sendToServer("signup","?user_id="+user_id);
         //console.log("signing up: "+user_id);
       } else {
         //console.log("displaying username cannot be empty");
-        displayError("Username cannot be empty.");
+        displayError("Username may only contain alphanumeric characters or single hyphens.");
       }
 		}
 

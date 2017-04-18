@@ -272,6 +272,30 @@
   </style>
   <script>
 
+		document.addEventListener('DOMContentLoaded', function () {
+			if (!Notification) {
+				alert('Desktop notifications not available in your browser. Try Chromium.'); 
+				return;
+			}
+
+			if (Notification.permission !== "granted")
+				Notification.requestPermission();
+		});
+
+		function notify(sender_id, message) {
+			if (Notification.permission !== "granted")
+				Notification.requestPermission();
+			else {
+				var notification = new Notification(sender_id, {
+					body: message,
+				});
+			}
+		}
+
+    if (Notification) {
+      console.log("yes");
+      Notification.requestPermission();
+    }
     var user_id = "";
     var chat_id = "";
     var invited_users = [];
@@ -306,7 +330,9 @@
         var liElement = document.createElement("li");
         if (messages[i]["sender"].id == user_id) {
           liElement.setAttribute("class", "right");
-        }
+        } else {
+					notify(messages[i]["sender"].id, messages[i]["content"]);
+				}
         liElement.innerHTML = messages[i]["sender"].id+": "+messages[i]["content"];
         ulElement.appendChild(liElement);
         ulElement.scrollTop = ulElement.scrollHeight;
